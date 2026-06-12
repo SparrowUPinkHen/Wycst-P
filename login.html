@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>管理員登入 | Wycst P</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="hero">
+  <h1>管理員登入</h1>
+  <p class="subtitle">Admin Login - Wycst P</p>
+</header>
+
+<section class="features">
+  <div class="feature-card" style="max-width: 400px; margin: 0 auto; padding: 30px;">
+    <div style="text-align: left; margin-bottom: 15px;">
+      <label style="display: block; margin-bottom: 5px; font-weight: bold;">管理員信箱</label>
+      <input type="email" id="email" placeholder="請輸入 Email" style="width: 100%; box-sizing: border-box;">
+    </div>
+    <div style="text-align: left; margin-bottom: 20px;">
+      <label style="display: block; margin-bottom: 5px; font-weight: bold;">登入密碼</label>
+      <input type="password" id="password" placeholder="請輸入 Password" style="width: 100%; box-sizing: border-box;">
+    </div>
+    <button onclick="login()" style="width: 100%; padding: 12px; font-weight: bold; cursor: pointer;">
+      安全登入
+    </button>
+    <p id="status" style="margin-top: 15px; font-weight: bold; text-align: center; color: #dc3545;"></p>
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+<script>
+async function login() {
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
+  const status = document.getElementById("status");
+
+  if (!email || !password) { status.innerText = "❌ 請填寫管理員信箱與密碼"; return; }
+  status.innerText = "⚡ 驗證身分中...";
+  status.style.color = "#a89072";
+
+  const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+
+  if (error) {
+    status.innerText = "❌ 登入失敗：帳號或密碼錯誤";
+    status.style.color = "#dc3545";
+    return;
+  }
+  status.innerText = "🎉 登入成功！正在跳轉...";
+  status.style.color = "#28a745";
+  
+  setTimeout(() => { window.location.href = "admin-books.html"; }, 150);
+}
+</script>
+</body>
+</html>

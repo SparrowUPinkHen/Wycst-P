@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>筆記共享 | Wycst P</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    html, body { overflow-x: hidden; }
+
+    .search-container { max-width: 1000px; margin: -30px auto 30px; padding: 0 20px; }
+    .search-card {
+      background: white; padding: 20px; border-radius: 20px; box-shadow: 0 10px 30px rgba(138, 122, 102, 0.06);
+      border: 1px solid #f2ece2; display: flex; gap: 15px; align-items: center; flex-wrap: wrap;
+    }
+    .search-input-group { flex: 2; min-width: 250px; }
+    .filter-select-group { flex: 1.5; min-width: 220px; }
+
+    .search-card input {
+      width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 12px; font-size: 14px; box-sizing: border-box; outline: none;
+    }
+
+    .search-card select {
+      width: 100%; padding: 12px 35px 12px 12px; border: 1px solid #cbd5e1; border-radius: 12px; font-size: 14px; box-sizing: border-box; outline: none;
+      background-color: #fff; color: #333; transition: border-color 0.2s;
+      appearance: none;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%235f5142' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
+      background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;
+    }
+    .search-card input:focus, .search-card select:focus { border-color: #a89072; }
+
+    .search-btn {
+      padding: 12px 24px; background: #43392f; color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 14px; transition: background 0.2s;
+    }
+    .search-btn:hover { background: #5f5142; }
+
+    .clear-btn {
+      padding: 12px 20px; background: #f1ebe2; color: #5f5142; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 14px; transition: background 0.2s;
+    }
+    .clear-btn:hover { background: #e5ded4; }
+
+    .book-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; align-items: stretch; }
+    .book-card { display: flex; flex-direction: column; height: 100%; box-sizing: border-box; background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 8px 24px rgba(138, 122, 102, 0.06); border: 1px solid #f2ece2; transition: transform 0.2s; }
+    .book-card:hover { transform: translateY(-5px); }
+
+    .book-image-wrapper {
+      width: 100%;
+      aspect-ratio: 3 / 2;
+      overflow: hidden;
+      background-color: #f8fafc;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .note-file-icon {
+      font-size: 56px;
+      color: #8a7a66;
+    }
+
+    .dept-badge {
+      position: absolute; top: 10px; left: 10px; background: rgba(67, 57, 47, 0.85); color: white; padding: 4px 10px; border-radius: 10px; font-size: 11px; font-weight: bold;
+      backdrop-filter: blur(4px);
+      z-index: 2;
+    }
+
+    .book-info { display: flex; flex-direction: column; flex: 1; padding: 15px; }
+
+    .book-card h3 {
+      margin: 0 0 8px 0; font-size: 16px; color: #43392f;
+      line-clamp: 2;
+      overflow: hidden;
+      display: block;
+    }
+
+    .book-description-area { flex: 1; margin-bottom: 12px; }
+    .book-description-area p { margin: 4px 0; font-size: 13px; color: #5f5142; }
+
+    .book-meta-desc {
+      color: #8a7a66 !important; font-size: 12px !important; margin-top: 6px !important;
+      line-clamp: 2;
+      overflow: hidden;
+      display: block;
+    }
+
+    .front-contact-btn {
+      display: inline-block; color: white !important; padding: 12px 16px; border-radius: 12px; border: none; font-weight: bold; font-size: 13px; margin-top: 10px; width: 100%; box-sizing: border-box; text-align: center; transition: opacity 0.2s; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      appearance: none;
+    }
+    .front-contact-btn:hover { opacity: 0.9; }
+
+    .download-btn {
+      display: inline-block;
+      text-decoration: none;
+      background: #a89072;
+      color: white;
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-weight: bold;
+      font-size: 13px;
+      width: 100%;
+      box-sizing: border-box;
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .download-btn:hover {
+      background: #8a7a66;
+    }
+
+    @media (max-width: 576px) {
+      .search-card { padding: 12px; gap: 8px; }
+      .search-input-group, .filter-select-group { flex: 1; min-width: 100%; }
+      .search-btn, .clear-btn { width: 48%; text-align: center; flex: 1; }
+      .book-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 0 5px; }
+      .book-card h3 { font-size: 14px; }
+      .front-contact-btn, .download-btn { padding: 10px 8px; font-size: 12px; border-radius: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="hero">
+  <nav class="navbar">
+
+ <a href="index.html">首頁</a>
+
+  <a href="books.html">📚 二手書</a>
+
+  <a href="notes.html">📝 筆記</a>
+
+  <a href="exams.html">📄 考古題</a>
+
+  <a href="sell-book.html">📖 刊登二手書</a>
+
+  <a href="sell-note.html">✏️ 上傳筆記</a>
+
+  <a href="sell-exam.html">📂 上傳考古題</a>
+
+  <a href="about.html">關於我們</a>
+  
+  <a href="terms.html">平台規章</a>
+</nav>
+  <h1>筆記共享</h1>
+  <p class="subtitle">Find notes from students.</p>
+</header>
+
+<div class="search-container">
+  <div class="search-card">
+    <div class="search-input-group">
+      <input type="text" id="searchBar" onkeydown="if(event.key==='Enter') executeSearch()" placeholder="🔍 輸入課程、教授、筆記名稱進行搜尋...">
+    </div>
+    <div class="filter-select-group">
+      <select id="deptFilter">
+        <option value="ALL">🎓 全部科系領域</option>
+        <option value="商學院">💼 商學院 (經/會/企管/貿/財精/資管)</option>
+        <option value="法學院">⚖️ 法學院 (法律系)</option>
+        <option value="巨量資料管理學院">💻 巨量資料管理學院 (資科)</option>
+        <option value="人文社會學院">✍️ 人社院 (中/史/哲/政/社/社工/音)</option>
+        <option value="外國語文學院">🌍 外語學院 (英/日/德)</option>
+        <option value="理學院">🔬 理學院 (數/物/化/微/心)</option>
+        <option value="通識 / 其他">🏫 通識 / 其他</option>
+      </select>
+    </div>
+    <button class="search-btn" onclick="executeSearch()">🔍 立即查詢</button>
+    <button class="clear-btn" onclick="resetFilters()">重置</button>
+  </div>
+</div>
+
+<section class="product-section">
+  <div id="note-list" class="book-grid"></div>
+</section>
+
+<footer>
+  <p>© Wycst P</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+<script>
+let allNotes = [];
+let isDataLoaded = false;
+
+async function loadNotes() {
+  const container = document.getElementById("note-list");
+  container.innerHTML = "<p style='text-align:center; color:#8a7a66;'>⚡ 正在同步最新筆記清單...</p>";
+
+  const { data, error } = await supabaseClient
+    .from("notes")
+    .select("*")
+    .eq("status", "approved")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    container.innerHTML = "<p style='text-align:center;'>筆記讀取失敗。</p>";
+    return;
+  }
+
+  allNotes = data || [];
+  isDataLoaded = true;
+  renderNotes(allNotes);
+}
+
+function renderNotes(notesList) {
+  const container = document.getElementById("note-list");
+
+  if (notesList.length === 0) {
+    container.innerHTML = "<p style='text-align:center; color:#8a7a66; grid-column: 1/-1; padding: 40px 0;'>🔍 沒有找到符合條件的筆記。</p>";
+    return;
+  }
+
+  container.innerHTML = "";
+
+  notesList.forEach(note => {
+    const fileUrl = note.file_url || "";
+    const department = note.department || "通識 / 其他";
+
+    container.innerHTML += `
+      <div class="book-card">
+        <div class="book-image-wrapper">
+          <span class="dept-badge">${department}</span>
+          <div class="note-file-icon">📝</div>
+        </div>
+
+        <div class="book-info">
+          <h3>${note.title || note.course_name}</h3>
+
+          <div class="book-description-area">
+            <p><strong>課程：</strong>${note.course_name || "未填寫"}</p>
+            <p><strong>教授：</strong>${note.professor || "未填寫"}</p>
+            <p class="book-meta-desc">${note.description || "無備註說明。"}</p>
+          </div>
+
+          <div style="margin-top: auto; padding-top: 10px; border-top: 1px solid #f8f5f0;">
+            <p style="margin: 4px 0 0 0; font-size: 12px; color: #7a6c5a;">
+              提供者：${note.seller_name || "匿名"}
+            </p>
+
+            <p style="margin: 4px 0 0 0; font-size: 12px; color: #7a6c5a;">
+              LINE：${note.line_id || "未提供"}
+            </p>
+
+            <a href="${fileUrl}" target="_blank" class="download-btn">
+              查看 / 下載筆記
+            </a>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+}
+
+function executeSearch() {
+  if (!isDataLoaded) return;
+
+  const keyword = document.getElementById("searchBar").value.toLowerCase().trim();
+  const selectedDept = document.getElementById("deptFilter").value;
+
+  const filtered = allNotes.filter(note => {
+    const matchesDept = (selectedDept === "ALL") || (note.department === selectedDept);
+
+    const titleStr = note.title || "";
+    const courseStr = note.course_name || "";
+    const profStr = note.professor || "";
+    const descStr = note.description || "";
+
+    const matchesKeyword = !keyword ||
+      titleStr.toLowerCase().includes(keyword) ||
+      courseStr.toLowerCase().includes(keyword) ||
+      profStr.toLowerCase().includes(keyword) ||
+      descStr.toLowerCase().includes(keyword);
+
+    return matchesDept && matchesKeyword;
+  });
+
+  renderNotes(filtered);
+}
+
+function resetFilters() {
+  document.getElementById("searchBar").value = "";
+  document.getElementById("deptFilter").value = "ALL";
+  renderNotes(allNotes);
+}
+
+loadNotes();
+</script>
+</body>
+</html>

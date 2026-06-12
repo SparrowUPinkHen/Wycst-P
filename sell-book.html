@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>刊登二手書 | Wycst P</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    html, body { overflow-x: hidden; }
+    .premium-form-container { max-width: 850px; margin: -40px auto 80px; padding: 0 20px; box-sizing: border-box; }
+    .premium-card { background: white; padding: 40px; border-radius: 28px; box-shadow: 0 15px 45px rgba(138, 122, 102, 0.08); }
+    .form-instruction { text-align: center; margin-bottom: 35px; border-bottom: 1px dashed #e5ded4; padding-bottom: 20px; }
+    .form-instruction h2 { margin: 0 0 8px 0; color: #43392f; font-size: 24px; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .form-group { display: flex; flex-direction: column; }
+    .form-group.full-width { grid-column: span 2; }
+    .form-group label { margin-bottom: 8px; font-weight: 700; font-size: 14px; color: #5f5142; display: flex; align-items: center; gap: 6px; }
+    
+    select {
+      width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 12px; font-size: 15px;
+      background-color: #fff; color: #333; outline: none; transition: border-color 0.2s;
+      appearance: none;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%235f5142' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
+      background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;
+    }
+    select:focus { border-color: #a89072; }
+
+    .contact-selector { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 12px; width: 100%; }
+    .contact-type-btn { padding: 12px 8px; border-radius: 12px; background: #f1ebe2; color: #5f5142; font-size: 13px; font-weight: bold; text-align: center; cursor: pointer; border: 2px solid transparent; transition: all 0.2s ease; user-select: none; }
+    .contact-type-btn:hover { background: #e5ded4; }
+    .contact-type-btn.active { background: #43392f; color: white; border-color: #a89072; }
+
+    .premium-upload-box { border: 2px dashed #cbd5e1; background: #f8fafc; border-radius: 16px; padding: 30px 20px; text-align: center; cursor: pointer; transition: all 0.2s ease; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .premium-upload-box:hover { border-color: #a89072; background: #faf8f5; }
+    .upload-icon { font-size: 32px; margin-bottom: 10px; display: block; }
+    .upload-text { font-size: 14px; color: #64748b; font-weight: 500; }
+    #bookImage { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+    #imagePreview { max-height: 220px; max-width: 100%; object-fit: contain; margin-top: 15px; border-radius: 12px; display: none; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .submit-btn { width: 100%; padding: 16px; font-size: 18px; letter-spacing: 2px; margin-top: 20px; border-radius: 16px; box-shadow: 0 8px 20px rgba(67, 57, 47, 0.15); appearance: none; }
+
+    @media (max-width: 768px) {
+      .hero { padding: 50px 20px 40px 20px; }
+      .premium-form-container { margin-top: -20px; padding: 0 15px; }
+      .premium-card { padding: 25px 20px; border-radius: 20px; }
+      .form-instruction h2 { font-size: 20px; }
+      .form-grid { grid-template-columns: 1fr; gap: 16px; }
+      .form-group.full-width { grid-column: span 1; }
+      .contact-selector { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+      .contact-type-btn { padding: 14px 10px; font-size: 14px; }
+      .premium-upload-box { padding: 20px 15px; }
+      .submit-btn { font-size: 16px; padding: 14px; }
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="hero">
+ <nav class="navbar">
+
+  <a href="index.html">首頁</a>
+
+  <a href="books.html">📚 二手書</a>
+
+  <a href="notes.html">📝 筆記</a>
+
+  <a href="exams.html">📄 考古題</a>
+
+  <a href="sell-book.html">📖 刊登二手書</a>
+
+  <a href="sell-note.html">✏️ 上傳筆記</a>
+
+  <a href="sell-exam.html">📂 上傳考古題</a>
+
+  <a href="about.html">關於我們</a>
+  
+  <a href="terms.html">平台規章</a>
+</nav>
+  <h1>刊登二手書</h1>
+  <p class="subtitle">Share Your Books - Wycst P</p>
+</header>
+
+<div class="premium-form-container">
+  <div class="premium-card">
+    
+    <div class="form-instruction">
+      <h2>📖 填寫書本與聯絡資訊</h2>
+      <p style="margin:0; color:#8a7a66; font-size:13px;">請提供真實資訊，系統審核通過後將立即上架市集。</p>
+    </div>
+
+    <div class="form-grid">
+      <div class="form-group full-width">
+        <label>📙 書本名稱 <span style="color:#dc3545;">*</span></label>
+        <input id="title" placeholder="例如：Calculus Early Transcendentals 9/e">
+      </div>
+
+      <div class="form-group">
+        <label>🎓 所屬科系 / 領域 <span style="color:#dc3545;">*</span></label>
+        <select id="department">
+          <option value="商學院">💼 商學院 (經/會/企管/貿/財精/資管)</option>
+          <option value="法學院">⚖️ 法學院 (法律系)</option>
+          <option value="巨量資料管理學院">💻 巨量資料管理學院 (資科)</option>
+          <option value="人文社會學院">✍️ 人社院 (中/史/哲/政/社/社工/音)</option>
+          <option value="外國語文學院">🌍 外語學院 (英/日/德)</option>
+          <option value="理學院">🔬 理學院 (數/物/化/微/心)</option>
+          <option value="通識 / 其他">🏫 通識 / 其他</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>💰 預售價格 (NT$) <span style="color:#dc3545;">*</span></label>
+        <input id="price" type="number" placeholder="你想賣多少錢？(填 0 代表面議)">
+      </div>
+
+      <div class="form-group">
+        <label>🏫 授課校區</label>
+        <input id="campus" placeholder="例如：雙溪校區、城中校區">
+      </div>
+
+      <div class="form-group">
+        <label>📝 課程名稱</label>
+        <input id="course_name" placeholder="例如：微積分、會計學">
+      </div>
+
+      <div class="form-group">
+        <label>👨‍🏫 授課教授</label>
+        <input id="professor" placeholder="請輸入教授姓名">
+      </div>
+
+      <div class="form-group">
+        <label>👤 賣家姓名 / 暱稱 <span style="color:#dc3545;">*</span></label>
+        <input id="seller_name" placeholder="聯絡時如何稱呼您？">
+      </div>
+
+      <div class="form-group full-width">
+        <label>💬 偏好聯絡管道 <span style="color:#dc3545;">*</span></label>
+        <div class="contact-selector">
+          <div class="contact-type-btn active" onclick="switchContactType('line', this)">💬 LINE</div>
+          <div class="contact-type-btn" onclick="switchContactType('fb', this)">👤 FB</div>
+          <div class="contact-type-btn" onclick="switchContactType('ig', this)">📸 IG</div>
+          <div class="contact-type-btn" onclick="switchContactType('phone', this)">📞 電話</div>
+          <div class="contact-type-btn" onclick="switchContactType('email', this)">✉️ 信箱</div>
+        </div>
+        <input id="contact_input" placeholder="請輸入您的 LINE ID">
+      </div>
+
+      <div class="form-group full-width">
+        <label>💡 書況與備註說明</label>
+        <textarea id="description" rows="3" placeholder="例如：全新未劃記 / 有少許鉛筆筆記 / 僅接受校內面交..."></textarea>
+      </div>
+
+      <div class="form-group full-width">
+        <label>📸 書本照片 <span style="color:#dc3545;">*</span></label>
+        <div class="premium-upload-box" id="uploadBox">
+          <span class="upload-icon">📸</span>
+          <span class="upload-text" id="uploadText">點擊此處選擇或拍攝照片</span>
+          <input type="file" id="bookImage" accept="image/*" onchange="previewImage(this)">
+          <img id="imagePreview" alt="圖片預覽">
+        </div>
+      </div>
+    </div>
+
+    <button onclick="submitBook()" class="submit-btn">
+      🚀 安全送出刊登申請
+    </button>
+
+    <p id="status" style="margin-top: 20px; font-weight: bold; text-align: center; color: #ffcb05; font-size:16px; min-height: 24px;"></p>
+
+  </div>
+</div>
+
+<footer>
+  <p>© Wycst P</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+
+<script>
+/* global supabaseClient */
+
+let currentContactType = "line";
+
+function switchContactType(type, element) {
+  currentContactType = type;
+  document.querySelectorAll('.contact-type-btn').forEach(btn => btn.classList.remove('active'));
+  element.classList.add('active');
+  
+  const input = document.getElementById("contact_input");
+  if (type === 'line') input.placeholder = "請輸入您的 LINE ID";
+  if (type === 'fb') input.placeholder = "請貼上您的 FB 個人主頁網址";
+  if (type === 'ig') input.placeholder = "請貼上您的 IG 主頁網址或輸入帳號";
+  if (type === 'phone') input.placeholder = "請輸入您的手機號碼 (如：0912345678)";
+  if (type === 'email') input.placeholder = "請輸入您的電子信箱地址";
+}
+
+function previewImage(input) {
+  const preview = document.getElementById('imagePreview');
+  const text = document.getElementById('uploadText');
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      preview.src = e.target.result;
+      preview.style.display = 'block';
+      text.textContent = `已選擇照片 (點擊可更換)`;
+    }
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+async function submitBook() {
+  const status = document.getElementById("status");
+  const title = document.getElementById("title").value.trim();
+  const seller_name = document.getElementById("seller_name").value.trim();
+  const contactVal = document.getElementById("contact_input").value.trim();
+  const deptVal = document.getElementById("department").value;
+  const file = document.getElementById("bookImage").files[0];
+
+  if (!title || !seller_name || !contactVal) {
+    status.textContent = "❌ 請填寫所有必填欄位";
+    status.style.color = "#dc3545";
+    return;
+  }
+
+  if (!file) {
+    status.textContent = "❌ 請務必上傳一張書本清晰照片";
+    status.style.color = "#dc3545";
+    return;
+  }
+
+  status.textContent = "⚡ 正在上傳並加密至雲端，請稍候...";
+  status.style.color = "#a89072";
+
+  let finalContactUrl = contactVal;
+  if (currentContactType === 'line') {
+    finalContactUrl = contactVal.startsWith('http') ? contactVal : `https://line.me/R/ti/p/~${contactVal}`;
+  } else if (currentContactType === 'fb') {
+    finalContactUrl = contactVal;
+  } else if (currentContactType === 'ig') {
+    finalContactUrl = contactVal.startsWith('http') ? contactVal : `https://www.instagram.com/${contactVal.replace('@', '')}`;
+  } else if (currentContactType === 'phone') {
+    finalContactUrl = `tel:${contactVal}`;
+  } else if (currentContactType === 'email') {
+    finalContactUrl = `mailto:${contactVal}`;
+  }
+
+  const fileName = Date.now() + "-" + file.name;
+
+  const { error: uploadError } = await supabaseClient.storage
+    .from("book-images")
+    .upload(fileName, file);
+
+  if (uploadError) {
+    status.textContent = "❌ 圖片上傳失敗，可能檔案過大或權限被擋";
+    status.style.color = "#dc3545";
+    return;
+  }
+
+  const { data: publicUrlData } = supabaseClient.storage
+    .from("book-images")
+    .getPublicUrl(fileName);
+
+  const imageUrl = publicUrlData.publicUrl;
+
+  const { error } = await supabaseClient
+    .from("books")
+    .insert([
+      {
+        title: title,
+        department: deptVal,
+        course_name: document.getElementById("course_name").value.trim(),
+        professor: document.getElementById("professor").value.trim(),
+        campus: document.getElementById("campus").value.trim(),
+        price: Number(document.getElementById("price").value) || 0,
+        seller_name: seller_name,
+        line_id: finalContactUrl,
+        description: document.getElementById("description").value.trim(),
+        image_url: imageUrl,
+        status: "pending"
+      }
+    ]);
+
+  if (error) {
+    status.textContent = "❌ 資料庫寫入失敗";
+    status.style.color = "#dc3545";
+    return;
+  }
+
+  status.textContent = "🎉 刊登成功！請靜待管理員審核上架。";
+  status.style.color = "#28a745";
+
+  // 清空表單
+  document.getElementById("title").value = "";
+  document.getElementById("course_name").value = "";
+  document.getElementById("professor").value = "";
+  document.getElementById("campus").value = "";
+  document.getElementById("price").value = "";
+  document.getElementById("seller_name").value = "";
+  document.getElementById("contact_input").value = "";
+  document.getElementById("description").value = "";
+  document.getElementById("bookImage").value = "";
+  document.getElementById('imagePreview').style.display = 'none';
+  document.getElementById('uploadText').textContent = '點擊此處選擇或拍攝照片';
+}
+</script>
+</body>
+</html>

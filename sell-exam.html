@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>上傳考古題 | Wycst P</title>
+<link rel="stylesheet" href="style.css">
+
+<style>
+html, body { overflow-x:hidden; }
+
+.premium-form-container{
+max-width:850px;
+margin:-40px auto 80px;
+padding:0 20px;
+}
+
+.premium-card{
+background:white;
+padding:40px;
+border-radius:28px;
+box-shadow:0 15px 45px rgba(138,122,102,.08);
+}
+
+.form-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:24px;
+}
+
+.form-group{
+display:flex;
+flex-direction:column;
+}
+
+.form-group.full-width{
+grid-column:span 2;
+}
+
+.form-group label{
+margin-bottom:8px;
+font-weight:700;
+font-size:14px;
+color:#5f5142;
+}
+
+.contact-selector{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:10px;
+margin-bottom:12px;
+}
+
+.contact-type-btn{
+padding:12px 8px;
+border-radius:12px;
+background:#f1ebe2;
+cursor:pointer;
+text-align:center;
+font-weight:bold;
+}
+
+.contact-type-btn.active{
+background:#43392f;
+color:white;
+}
+
+.premium-upload-box{
+border:2px dashed #cbd5e1;
+background:#f8fafc;
+border-radius:16px;
+padding:30px;
+text-align:center;
+position:relative;
+cursor:pointer;
+}
+
+#examFile{
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+opacity:0;
+cursor:pointer;
+}
+
+.submit-btn{
+width:100%;
+padding:16px;
+font-size:18px;
+border-radius:16px;
+background:#43392f;
+color:white;
+border:none;
+cursor:pointer;
+margin-top:20px;
+}
+
+@media(max-width:768px){
+
+.form-grid{
+grid-template-columns:1fr;
+}
+
+.form-group.full-width{
+grid-column:span 1;
+}
+
+.contact-selector{
+grid-template-columns:repeat(2,1fr);
+}
+
+}
+</style>
+</head>
+
+<body>
+
+<header class="hero">
+
+<nav class="navbar">
+
+   <a href="index.html">首頁</a>
+
+  <a href="books.html">📚 二手書</a>
+
+  <a href="notes.html">📝 筆記</a>
+
+  <a href="exams.html">📄 考古題</a>
+
+  <a href="sell-book.html">📖 刊登二手書</a>
+
+  <a href="sell-note.html">✏️ 上傳筆記</a>
+
+  <a href="sell-exam.html">📂 上傳考古題</a>
+
+  <a href="about.html">關於我們</a>
+  
+  <a href="terms.html">平台規章</a>
+</nav>
+
+<h1>上傳考古題</h1>
+
+<p class="subtitle">
+Share Your Past Exams
+</p>
+
+</header>
+
+<div class="premium-form-container">
+
+<div class="premium-card">
+
+<div style="text-align:center;margin-bottom:30px;">
+<h2>📄 上傳考古題</h2>
+<p style="color:#8a7a66;">
+分享歷屆考題與期中期末試卷
+</p>
+</div>
+
+<div class="form-grid">
+
+<div class="form-group full-width">
+<label>📄 考古題標題 *</label>
+<input id="title" placeholder="例如：統計學期末考">
+</div>
+
+<div class="form-group">
+<label>🎓 科系 *</label>
+
+<select id="department">
+<option value="ALL">🎓 全部科系領域</option>
+<option value="商學院">💼 商學院 (經/會/企管/貿/財精/資管)</option>
+<option value="法學院">⚖️ 法學院 (法律系)</option>
+<option value="巨量資料管理學院">💻 巨量資料管理學院 (資科)</option>
+<option value="人文社會學院">✍️ 人社院 (中/史/哲/政/社/社工/音)</option>
+<option value="外國語文學院">🌍 外語學院 (英/日/德)</option>
+<option value="理學院">🔬 理學院 (數/物/化/微/心)</option>
+<option value="通識 / 其他">🏫 通識 / 其他</option>
+</select>
+
+</div>
+
+<div class="form-group">
+<label>📖 課程名稱 *</label>
+<input id="course_name">
+</div>
+
+<div class="form-group">
+<label>👨‍🏫 授課教授</label>
+<input id="professor">
+</div>
+
+<div class="form-group">
+<label>📅 年份</label>
+<input id="year" placeholder="例如：2024">
+</div>
+
+<div class="form-group">
+<label>👤 提供者</label>
+<input id="seller_name">
+</div>
+
+<div class="form-group full-width">
+
+<label>💬 聯絡方式</label>
+
+<div class="contact-selector">
+
+<div class="contact-type-btn active"
+onclick="switchContactType('line',this)">
+LINE
+</div>
+
+<div class="contact-type-btn"
+onclick="switchContactType('fb',this)">
+FB
+</div>
+
+<div class="contact-type-btn"
+onclick="switchContactType('ig',this)">
+IG
+</div>
+
+<div class="contact-type-btn"
+onclick="switchContactType('email',this)">
+Email
+</div>
+
+</div>
+
+<input id="contact_input">
+
+</div>
+
+<div class="form-group full-width">
+<label>📝 備註</label>
+<textarea id="description"></textarea>
+</div>
+
+<div class="form-group full-width">
+
+<label>📎 上傳檔案 *</label>
+
+<div class="premium-upload-box">
+
+<div style="font-size:40px;">📄</div>
+
+<div id="uploadText">
+選擇 PDF 或圖片檔
+</div>
+
+<input
+type="file"
+id="examFile"
+accept="application/pdf,image/*"
+onchange="previewFile(this)"
+>
+
+</div>
+
+</div>
+
+</div>
+
+<button
+onclick="submitExam()"
+class="submit-btn">
+🚀 送出考古題
+</button>
+
+<p id="status"
+style="text-align:center;font-weight:bold;margin-top:15px;">
+</p>
+
+</div>
+
+</div>
+
+<footer>
+<p>© Wycst P</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+
+<script>
+
+let currentContactType="line";
+
+function switchContactType(type,el){
+
+currentContactType=type;
+
+document.querySelectorAll(".contact-type-btn")
+.forEach(btn=>btn.classList.remove("active"));
+
+el.classList.add("active");
+
+}
+
+function previewFile(input){
+
+if(input.files[0]){
+
+document.getElementById("uploadText")
+.innerText=input.files[0].name;
+
+}
+
+}
+
+async function submitExam(){
+
+const status=document.getElementById("status");
+
+const file=document.getElementById("examFile").files[0];
+
+if(!file){
+
+status.innerText="請上傳檔案";
+return;
+
+}
+
+const fileName=Date.now()+"-"+file.name;
+
+const {error:uploadError}=await supabaseClient.storage
+.from("exam-files")
+.upload(fileName,file);
+
+if(uploadError){
+
+status.innerText="檔案上傳失敗";
+return;
+
+}
+
+const {data:publicUrlData}=supabaseClient.storage
+.from("exam-files")
+.getPublicUrl(fileName);
+
+let contact=document.getElementById("contact_input").value;
+
+if(contact){
+
+if(currentContactType==="line"){
+contact=`https://line.me/R/ti/p/~${contact}`;
+}
+
+if(currentContactType==="ig"){
+contact=`https://www.instagram.com/${contact.replace("@","")}`;
+}
+
+if(currentContactType==="email"){
+contact=`mailto:${contact}`;
+}
+
+}
+
+const {error}=await supabaseClient
+.from("exams")
+.insert([{
+
+title:document.getElementById("title").value,
+department:document.getElementById("department").value,
+course_name:document.getElementById("course_name").value,
+professor:document.getElementById("professor").value,
+year:document.getElementById("year").value,
+seller_name:document.getElementById("seller_name").value,
+line_id:contact,
+description:document.getElementById("description").value,
+file_url:publicUrlData.publicUrl,
+status:"pending"
+
+}]);
+
+if(error){
+
+status.innerText="資料寫入失敗";
+console.log(error);
+return;
+
+}
+
+status.innerText="🎉 考古題已送出，等待審核";
+
+}
+
+</script>
+
+</body>
+</html>

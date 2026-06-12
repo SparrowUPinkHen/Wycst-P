@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>考古題共享 | Wycst P</title>
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    html, body { overflow-x: hidden; }
+
+    .search-container { max-width: 1000px; margin: -30px auto 30px; padding: 0 20px; }
+    .search-card {
+      background: white; padding: 20px; border-radius: 20px; box-shadow: 0 10px 30px rgba(138, 122, 102, 0.06);
+      border: 1px solid #f2ece2; display: flex; gap: 15px; align-items: center; flex-wrap: wrap;
+    }
+    .search-input-group { flex: 2; min-width: 250px; }
+    .filter-select-group { flex: 1.5; min-width: 220px; }
+
+    .search-card input {
+      width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 12px; font-size: 14px; box-sizing: border-box; outline: none;
+    }
+
+    .search-card select {
+      width: 100%; padding: 12px 35px 12px 12px; border: 1px solid #cbd5e1; border-radius: 12px; font-size: 14px; box-sizing: border-box; outline: none;
+      background-color: #fff; color: #333; transition: border-color 0.2s;
+      appearance: none;
+    }
+
+    .search-card input:focus, .search-card select:focus { border-color: #a89072; }
+
+    .search-btn {
+      padding: 12px 24px; background: #43392f; color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 14px;
+    }
+
+    .clear-btn {
+      padding: 12px 20px; background: #f1ebe2; color: #5f5142; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 14px;
+    }
+
+    .book-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; align-items: stretch; }
+    .book-card { display: flex; flex-direction: column; height: 100%; box-sizing: border-box; background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 8px 24px rgba(138, 122, 102, 0.06); border: 1px solid #f2ece2; transition: transform 0.2s; }
+    .book-card:hover { transform: translateY(-5px); }
+
+    .book-image-wrapper {
+      width: 100%;
+      aspect-ratio: 3 / 2;
+      overflow: hidden;
+      background-color: #f8fafc;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .exam-file-icon {
+      font-size: 56px;
+      color: #8a7a66;
+    }
+
+    .dept-badge {
+      position: absolute; top: 10px; left: 10px; background: rgba(67, 57, 47, 0.85); color: white; padding: 4px 10px; border-radius: 10px; font-size: 11px; font-weight: bold;
+      z-index: 2;
+    }
+
+    .book-info { display: flex; flex-direction: column; flex: 1; padding: 15px; }
+
+    .book-card h3 {
+      margin: 0 0 8px 0; font-size: 16px; color: #43392f;
+      line-clamp: 2;
+      overflow: hidden;
+      display: block;
+    }
+
+    .book-description-area { flex: 1; margin-bottom: 12px; }
+    .book-description-area p { margin: 4px 0; font-size: 13px; color: #5f5142; }
+
+    .book-meta-desc {
+      color: #8a7a66 !important; font-size: 12px !important; margin-top: 6px !important;
+      line-clamp: 2;
+      overflow: hidden;
+      display: block;
+    }
+
+    .download-btn {
+      display: inline-block;
+      text-decoration: none;
+      background: #a89072;
+      color: white;
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-weight: bold;
+      font-size: 13px;
+      width: 100%;
+      box-sizing: border-box;
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .download-btn:hover { background: #8a7a66; }
+
+    @media (max-width: 576px) {
+      .search-card { padding: 12px; gap: 8px; }
+      .search-input-group, .filter-select-group { flex: 1; min-width: 100%; }
+      .search-btn, .clear-btn { width: 48%; text-align: center; flex: 1; }
+      .book-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 0 5px; }
+      .book-card h3 { font-size: 14px; }
+      .download-btn { padding: 10px 8px; font-size: 12px; border-radius: 10px; }
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="hero">
+<nav class="navbar">
+
+ <a href="index.html">首頁</a>
+
+  <a href="books.html">📚 二手書</a>
+
+  <a href="notes.html">📝 筆記</a>
+
+  <a href="exams.html">📄 考古題</a>
+
+  <a href="sell-book.html">📖 刊登二手書</a>
+
+  <a href="sell-note.html">✏️ 上傳筆記</a>
+
+  <a href="sell-exam.html">📂 上傳考古題</a>
+
+  <a href="about.html">關於我們</a>
+  
+  <a href="terms.html">平台規章</a>
+</nav>
+
+  <h1>考古題共享</h1>
+  <p class="subtitle">Find past exams from students.</p>
+</header>
+
+<div class="search-container">
+  <div class="search-card">
+
+    <div class="search-input-group">
+      <input type="text" id="searchBar" onkeydown="if(event.key==='Enter') executeSearch()" placeholder="🔍 輸入課程、教授、年份、考古題名稱搜尋...">
+    </div>
+
+    <div class="filter-select-group">
+      <select id="deptFilter">
+        <option value="ALL">🎓 全部科系領域</option>
+        <option value="商學院">💼 商學院 (經/會/企管/貿/財精/資管)</option>
+        <option value="法學院">⚖️ 法學院 (法律系)</option>
+        <option value="巨量資料管理學院">💻 巨量資料管理學院 (資科)</option>
+        <option value="人文社會學院">✍️ 人社院 (中/史/哲/政/社/社工/音)</option>
+        <option value="外國語文學院">🌍 外語學院 (英/日/德)</option>
+        <option value="理學院">🔬 理學院 (數/物/化/微/心)</option>
+        <option value="通識 / 其他">🏫 通識 / 其他</option>
+      </select>
+    </div>
+
+    <button class="search-btn" onclick="executeSearch()">🔍 立即查詢</button>
+    <button class="clear-btn" onclick="resetFilters()">重置</button>
+
+  </div>
+</div>
+
+<section class="product-section">
+  <div id="exam-list" class="book-grid"></div>
+</section>
+
+<footer>
+  <p>© Wycst P</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+
+<script>
+let allExams = [];
+let isDataLoaded = false;
+
+async function loadExams() {
+  const container = document.getElementById("exam-list");
+
+  container.innerHTML =
+    "<p style='text-align:center; color:#8a7a66;'>⚡ 正在同步最新考古題清單...</p>";
+
+  const { data, error } = await supabaseClient
+    .from("exams")
+    .select("*")
+    .eq("status", "approved")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    container.innerHTML = "<p style='text-align:center;'>考古題讀取失敗。</p>";
+    return;
+  }
+
+  allExams = data || [];
+  isDataLoaded = true;
+  renderExams(allExams);
+}
+
+function renderExams(examsList) {
+  const container = document.getElementById("exam-list");
+
+  if (examsList.length === 0) {
+    container.innerHTML =
+      "<p style='text-align:center; color:#8a7a66; grid-column: 1/-1; padding: 40px 0;'>🔍 沒有找到符合條件的考古題。</p>";
+    return;
+  }
+
+  container.innerHTML = "";
+
+  examsList.forEach(exam => {
+    const fileUrl = exam.file_url || "";
+    const department = exam.department || "通識 / 其他";
+
+    container.innerHTML += `
+      <div class="book-card">
+
+        <div class="book-image-wrapper">
+          <span class="dept-badge">${department}</span>
+          <div class="exam-file-icon">📄</div>
+        </div>
+
+        <div class="book-info">
+          <h3>${exam.title || exam.course_name}</h3>
+
+          <div class="book-description-area">
+            <p><strong>課程：</strong>${exam.course_name || "未填寫"}</p>
+            <p><strong>教授：</strong>${exam.professor || "未填寫"}</p>
+            <p><strong>年份：</strong>${exam.year || "未填寫"}</p>
+            <p class="book-meta-desc">${exam.description || "無備註說明。"}</p>
+          </div>
+
+          <div style="margin-top: auto; padding-top: 10px; border-top: 1px solid #f8f5f0;">
+
+            <p style="margin: 4px 0 0 0; font-size: 12px; color: #7a6c5a;">
+              提供者：${exam.seller_name || "匿名"}
+            </p>
+
+            <p style="margin: 4px 0 0 0; font-size: 12px; color: #7a6c5a;">
+              LINE：${exam.line_id || "未提供"}
+            </p>
+
+            <a href="${fileUrl}" target="_blank" class="download-btn">
+              查看 / 下載考古題
+            </a>
+
+          </div>
+        </div>
+
+      </div>
+    `;
+  });
+}
+
+function executeSearch() {
+  if (!isDataLoaded) return;
+
+  const keyword =
+    document.getElementById("searchBar").value.toLowerCase().trim();
+
+  const selectedDept =
+    document.getElementById("deptFilter").value;
+
+  const filtered = allExams.filter(exam => {
+    const matchesDept =
+      selectedDept === "ALL" || exam.department === selectedDept;
+
+    const titleStr = exam.title || "";
+    const courseStr = exam.course_name || "";
+    const profStr = exam.professor || "";
+    const descStr = exam.description || "";
+    const yearStr = exam.year || "";
+
+    const matchesKeyword =
+      !keyword ||
+      titleStr.toLowerCase().includes(keyword) ||
+      courseStr.toLowerCase().includes(keyword) ||
+      profStr.toLowerCase().includes(keyword) ||
+      descStr.toLowerCase().includes(keyword) ||
+      yearStr.toLowerCase().includes(keyword);
+
+    return matchesDept && matchesKeyword;
+  });
+
+  renderExams(filtered);
+}
+
+function resetFilters() {
+  document.getElementById("searchBar").value = "";
+  document.getElementById("deptFilter").value = "ALL";
+  renderExams(allExams);
+}
+
+loadExams();
+</script>
+
+</body>
+</html>

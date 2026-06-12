@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>上傳筆記 | Wycst P</title>
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    html, body { overflow-x: hidden; }
+
+    .premium-form-container { max-width: 850px; margin: -40px auto 80px; padding: 0 20px; box-sizing: border-box; }
+
+    .premium-card {
+      background: white;
+      padding: 40px;
+      border-radius: 28px;
+      box-shadow: 0 15px 45px rgba(138, 122, 102, 0.08);
+    }
+
+    .form-instruction {
+      text-align: center;
+      margin-bottom: 35px;
+      border-bottom: 1px dashed #e5ded4;
+      padding-bottom: 20px;
+    }
+
+    .form-instruction h2 {
+      margin: 0 0 8px 0;
+      color: #43392f;
+      font-size: 24px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-group.full-width {
+      grid-column: span 2;
+    }
+
+    .form-group label {
+      margin-bottom: 8px;
+      font-weight: 700;
+      font-size: 14px;
+      color: #5f5142;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      font-size: 15px;
+      background-color: #fff;
+      color: #333;
+      outline: none;
+      appearance: none;
+    }
+
+    .contact-selector {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 12px;
+      width: 100%;
+    }
+
+    .contact-type-btn {
+      padding: 12px 8px;
+      border-radius: 12px;
+      background: #f1ebe2;
+      color: #5f5142;
+      font-size: 13px;
+      font-weight: bold;
+      text-align: center;
+      cursor: pointer;
+      border: 2px solid transparent;
+    }
+
+    .contact-type-btn.active {
+      background: #43392f;
+      color: white;
+      border-color: #a89072;
+    }
+
+    .premium-upload-box {
+      border: 2px dashed #cbd5e1;
+      background: #f8fafc;
+      border-radius: 16px;
+      padding: 30px 20px;
+      text-align: center;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .upload-icon {
+      font-size: 32px;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .upload-text {
+      font-size: 14px;
+      color: #64748b;
+      font-weight: 500;
+    }
+
+    #noteFile {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 16px;
+      font-size: 18px;
+      letter-spacing: 2px;
+      margin-top: 20px;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(67, 57, 47, 0.15);
+      appearance: none;
+    }
+
+    @media (max-width: 768px) {
+      .premium-form-container { margin-top: -20px; padding: 0 15px; }
+      .premium-card { padding: 25px 20px; border-radius: 20px; }
+      .form-grid { grid-template-columns: 1fr; gap: 16px; }
+      .form-group.full-width { grid-column: span 1; }
+      .contact-selector { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="hero">
+ <nav class="navbar">
+
+  <a href="index.html">首頁</a>
+
+  <a href="books.html">📚 二手書</a>
+
+  <a href="notes.html">📝 筆記</a>
+
+  <a href="exams.html">📄 考古題</a>
+
+  <a href="sell-book.html">📖 刊登二手書</a>
+
+  <a href="sell-note.html">✏️ 上傳筆記</a>
+
+  <a href="sell-exam.html">📂 上傳考古題</a>
+
+  <a href="about.html">關於我們</a>
+  
+  <a href="terms.html">平台規章</a>
+</nav>
+
+  <h1>上傳筆記</h1>
+  <p class="subtitle">Share Your Notes - Wycst P</p>
+</header>
+
+<div class="premium-form-container">
+  <div class="premium-card">
+
+    <div class="form-instruction">
+      <h2>📝 填寫筆記資訊</h2>
+      <p style="margin:0; color:#8a7a66; font-size:13px;">
+        請上傳你願意分享的課堂筆記，審核通過後將出現在筆記區。
+      </p>
+    </div>
+
+    <div class="form-grid">
+
+      <div class="form-group full-width">
+        <label>📝 筆記標題 <span style="color:#dc3545;">*</span></label>
+        <input id="title" placeholder="例如：統計學期中重點整理">
+      </div>
+
+      <div class="form-group">
+        <label>🎓 所屬科系 / 領域 <span style="color:#dc3545;">*</span></label>
+        <select id="department">
+          <option value="ALL">🎓 全部科系領域</option>
+          <option value="商學院">💼 商學院 (經/會/企管/貿/財精/資管)</option>
+          <option value="法學院">⚖️ 法學院 (法律系)</option>
+          <option value="巨量資料管理學院">💻 巨量資料管理學院 (資科)</option>
+          <option value="人文社會學院">✍️ 人社院 (中/史/哲/政/社/社工/音)</option>
+          <option value="外國語文學院">🌍 外語學院 (英/日/德)</option>
+          <option value="理學院">🔬 理學院 (數/物/化/微/心)</option>
+          <option value="通識 / 其他">🏫 通識 / 其他</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>📝 課程名稱 <span style="color:#dc3545;">*</span></label>
+        <input id="course_name" placeholder="例如：統計學、經濟學">
+      </div>
+
+      <div class="form-group">
+        <label>👨‍🏫 授課教授</label>
+        <input id="professor" placeholder="請輸入教授姓名">
+      </div>
+
+      <div class="form-group">
+        <label>👤 提供者姓名 / 暱稱</label>
+        <input id="seller_name" placeholder="可以填暱稱">
+      </div>
+
+      <div class="form-group full-width">
+        <label>💬 聯絡方式</label>
+
+        <div class="contact-selector">
+          <div class="contact-type-btn active" onclick="switchContactType('line', this)">💬 LINE</div>
+          <div class="contact-type-btn" onclick="switchContactType('fb', this)">👤 FB</div>
+          <div class="contact-type-btn" onclick="switchContactType('ig', this)">📸 IG</div>
+          <div class="contact-type-btn" onclick="switchContactType('email', this)">✉️ 信箱</div>
+        </div>
+
+        <input id="contact_input" placeholder="請輸入您的 LINE ID">
+      </div>
+
+      <div class="form-group full-width">
+        <label>💡 筆記說明</label>
+        <textarea id="description" rows="3" placeholder="例如：期中範圍整理 / 手寫筆記 / PDF掃描檔..."></textarea>
+      </div>
+
+      <div class="form-group full-width">
+        <label>📄 筆記檔案 <span style="color:#dc3545;">*</span></label>
+
+        <div class="premium-upload-box">
+          <span class="upload-icon">📄</span>
+          <span class="upload-text" id="uploadText">點擊此處選擇 PDF 或圖片</span>
+          <input type="file" id="noteFile" accept="application/pdf,image/*" onchange="previewFile(this)">
+        </div>
+      </div>
+
+    </div>
+
+    <button onclick="submitNote()" class="submit-btn">
+      🚀 送出筆記審核
+    </button>
+
+    <p id="status" style="margin-top:20px; font-weight:bold; text-align:center; color:#a89072;"></p>
+
+  </div>
+</div>
+
+<footer>
+  <p>© Wycst P</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+
+<script>
+let currentContactType = "line";
+
+function switchContactType(type, element) {
+  currentContactType = type;
+
+  document.querySelectorAll(".contact-type-btn")
+    .forEach(btn => btn.classList.remove("active"));
+
+  element.classList.add("active");
+
+  const input = document.getElementById("contact_input");
+
+  if (type === "line") input.placeholder = "請輸入您的 LINE ID";
+  if (type === "fb") input.placeholder = "請貼上您的 FB 個人主頁網址";
+  if (type === "ig") input.placeholder = "請貼上您的 IG 主頁網址或輸入帳號";
+  if (type === "email") input.placeholder = "請輸入您的電子信箱地址";
+}
+
+function previewFile(input) {
+  const text = document.getElementById("uploadText");
+
+  if (input.files && input.files[0]) {
+    text.textContent = "已選擇檔案：" + input.files[0].name;
+  }
+}
+
+async function submitNote() {
+  const status = document.getElementById("status");
+
+  const title = document.getElementById("title").value.trim();
+  const course_name = document.getElementById("course_name").value.trim();
+  const professor = document.getElementById("professor").value.trim();
+  const department = document.getElementById("department").value;
+  const seller_name = document.getElementById("seller_name").value.trim();
+  const contactVal = document.getElementById("contact_input").value.trim();
+  const description = document.getElementById("description").value.trim();
+  const file = document.getElementById("noteFile").files[0];
+
+  if (!title || !course_name || !file) {
+    status.textContent = "❌ 請填寫筆記標題、課程名稱，並上傳檔案";
+    status.style.color = "#dc3545";
+    return;
+  }
+
+  status.textContent = "⚡ 正在上傳筆記檔案，請稍候...";
+  status.style.color = "#a89072";
+
+  let finalContactUrl = contactVal;
+
+  if (contactVal) {
+    if (currentContactType === "line") {
+      finalContactUrl = contactVal.startsWith("http")
+        ? contactVal
+        : `https://line.me/R/ti/p/~${contactVal}`;
+    } else if (currentContactType === "fb") {
+      finalContactUrl = contactVal;
+    } else if (currentContactType === "ig") {
+      finalContactUrl = contactVal.startsWith("http")
+        ? contactVal
+        : `https://www.instagram.com/${contactVal.replace("@", "")}`;
+    } else if (currentContactType === "email") {
+      finalContactUrl = `mailto:${contactVal}`;
+    }
+  }
+
+  const fileName = Date.now() + "-" + file.name;
+
+  const { error: uploadError } = await supabaseClient.storage
+    .from("note-files")
+    .upload(fileName, file);
+
+  if (uploadError) {
+    console.log(uploadError);
+    status.textContent = "❌ 檔案上傳失敗";
+    status.style.color = "#dc3545";
+    return;
+  }
+
+  const { data: publicUrlData } = supabaseClient.storage
+    .from("note-files")
+    .getPublicUrl(fileName);
+
+  const fileUrl = publicUrlData.publicUrl;
+
+  const { error } = await supabaseClient
+    .from("notes")
+    .insert([
+      {
+        title: title,
+        department: department,
+        course_name: course_name,
+        professor: professor,
+        seller_name: seller_name,
+        line_id: finalContactUrl,
+        description: description,
+        file_url: fileUrl,
+        status: "pending"
+      }
+    ]);
+
+  if (error) {
+    console.log(error);
+    status.textContent = "❌ 資料寫入失敗";
+    status.style.color = "#dc3545";
+    return;
+  }
+
+  status.textContent = "🎉 筆記已送出，等待管理員審核！";
+  status.style.color = "#28a745";
+}
+</script>
+
+</body>
+</html>
