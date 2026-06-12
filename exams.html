@@ -210,12 +210,23 @@ function renderExams(examsList) {
     }
 
     const clickHandler = isEmail ? `copyEmail('${emailAddress}', this)` : `goToContact('${contactUrl}')`;
+    const fileUrl = exam.file_url || "";
+
+    // 判斷 file_url 是否為圖片格式，如果是，就直接渲染成封面照片
+    const isImage = fileUrl && (
+      fileUrl.toLowerCase().endsWith('.png') || 
+      fileUrl.toLowerCase().endsWith('.jpg') || 
+      fileUrl.toLowerCase().endsWith('.jpeg') || 
+      fileUrl.toLowerCase().endsWith('.webp')
+    );
 
     container.innerHTML += `
       <div class="book-card">
         <div class="book-image-wrapper">
           <span class="dept-badge">${exam.department || "通識 / 其他"}</span>
-          <div class="exam-file-icon">📄</div>
+          ${isImage 
+            ? `<img src="${fileUrl}" alt="考古題封面" style="width: 100%; height: 100%; object-fit: cover;">` 
+            : `<div class="exam-file-icon">📄</div>`}
         </div>
         <div class="book-info">
           <h3>${exam.title || exam.course_name}</h3>
@@ -234,7 +245,7 @@ function renderExams(examsList) {
                  </button>` 
               : `<p style="margin: 14px 0 5px 0; font-size: 12px; color: #ccc; text-align: center;">未提供聯絡方式</p>`}
 
-            <a href="${exam.file_url || "#"}" target="_blank" class="download-btn">查看 / 下載考古題</a>
+            <a href="${fileUrl || "#"}" target="_blank" class="download-btn">查看 / 下載考古題</a>
           </div>
         </div>
       </div>
@@ -260,7 +271,7 @@ function resetFilters() {
   renderExams(allExams);
 }
 
-// 必須補上對齊 book 的點擊與複製核心函式
+// 補上對齊 book 的點擊與複製核心函式
 function goToContact(url) {
   if (!url) { alert("抱歉，該用戶沒有提供有效的聯絡方式。"); return; }
   const link = document.createElement('a');

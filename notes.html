@@ -227,11 +227,21 @@ function renderNotes(notesList) {
 
     const clickHandler = isEmail ? `copyEmail('${emailAddress}', this)` : `goToContact('${contactUrl}')`;
 
+    // 判斷 file_url 是否為圖片格式
+    const isImage = fileUrl && (
+      fileUrl.toLowerCase().endsWith('.png') || 
+      fileUrl.toLowerCase().endsWith('.jpg') || 
+      fileUrl.toLowerCase().endsWith('.jpeg') || 
+      fileUrl.toLowerCase().endsWith('.webp')
+    );
+
     container.innerHTML += `
       <div class="book-card">
         <div class="book-image-wrapper">
           <span class="dept-badge">${department}</span>
-          <div class="note-file-icon">📝</div>
+          ${isImage 
+            ? `<img src="${fileUrl}" alt="筆記封面" style="width: 100%; height: 100%; object-fit: cover;">` 
+            : `<div class="note-file-icon">📝</div>`}
         </div>
 
         <div class="book-info">
