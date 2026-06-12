@@ -11,56 +11,19 @@
     .admin-card { background: white; border-radius: 20px; padding: 30px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05); }
     .review-item { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #f2ece2; padding: 15px 10px; gap: 20px; transition: background 0.2s; }
     .review-item:hover { background: #faf8f5; }
-
-    .review-thumb-wrapper {
-      width: 60px;
-      height: 80px;
-      border-radius: 8px;
-      overflow: hidden;
-      border: 1px solid #e2d9cd;
-      background: #f8fafc;
-      flex-shrink: 0;
-
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      font-size:32px;
-    }
-
+    .review-thumb-wrapper { width: 60px; height: 80px; border-radius: 8px; overflow: hidden; border: 1px solid #e2d9cd; background: #f8fafc; flex-shrink: 0; display:flex; justify-content:center; align-items:center; font-size:32px; }
     .review-info { flex: 2; display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 15px; align-items: center; }
     .book-main h4 { margin: 0 0 5px 0; color: #43392f; font-size: 16px; }
     .book-main p { margin: 0; font-size: 13px; color: #8a7a66; }
     .book-meta p { margin: 2px 0; font-size: 13px; color: #5f5142; }
-
-    .status-badge {
-      display: inline-block;
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: bold;
-      text-align: center;
-    }
-
+    .status-badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; text-align: center; }
     .status-pending { background: #fff3cd; color: #856404; }
     .status-approved { background: #d4edda; color: #155724; }
     .status-rejected { background: #f8d7da; color: #721c24; }
-
     .action-btns { display: flex; gap: 10px; }
-
-    .btn-sm {
-      padding: 8px 14px;
-      font-size: 13px;
-      border-radius: 8px;
-      white-space: nowrap;
-      cursor: pointer;
-      border: none;
-      color: white;
-      font-weight: bold;
-    }
-
+    .btn-sm { padding: 8px 14px; font-size: 13px; border-radius: 8px; white-space: nowrap; cursor: pointer; border: none; color: white; font-weight: bold; }
     .btn-approve { background-color: #28a745; }
     .btn-reject { background-color: #dc3545; }
-
     @media (max-width: 992px) {
       .review-item { flex-direction: column; align-items: flex-start; gap: 12px; }
       .review-info { grid-template-columns: 1fr; width: 100%; gap: 10px; }
@@ -74,50 +37,43 @@
 <header class="hero" style="min-height: auto; padding: 40px 20px;">
   <h1>筆記審核後台</h1>
   <p class="subtitle">Notes Review List - Wycst P</p>
-
-  <button onclick="logout()" style="background-color: #5f5142; color: white; padding: 6px 18px; border-radius: 12px; cursor: pointer; margin-top: 15px; font-size:14px;">
-    登出後台
-  </button>
+  <button onclick="logout()" style="background-color: #5f5142; color: white; padding: 6px 18px; border-radius: 12px; cursor: pointer; margin-top: 15px; font-size:14px;">登出後台</button>
 </header>
 
 <div class="admin-container">
   <div class="admin-card">
-    <div id="review-list">
-      <p style="text-align:center; color:#8a7a66;">⚡ 安全驗證登入身分中...</p>
-    </div>
+    <div id="review-list"><p style="text-align:center; color:#8a7a66;">⚡ 安全驗證登入身分中...</p></div>
   </div>
 </div>
 
-<footer>
-  <p>© Wycst P</p>
-</footer>
+<footer><p>© Wycst P</p></footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase.js"></script>
 
 <script>
-let hasLoaded = false;
-
-supabaseClient.auth.onAuthStateChange((event, session) => {
-  if (session) {
-    if (!hasLoaded) {
-      hasLoaded = true;
-      loadRequests();
-    }
+// 改進後的驗證邏輯：頁面一載入就先檢查 session
+async function checkAuth() {
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  if (!session) {
+    window.location.href = "login.html";
   } else {
-    setTimeout(() => {
-      window.location.href = "login.html";
-    }, 100);
+    loadRequests();
   }
+}
+
+// 監聽登出動作，確保切換帳號時也會正確跳轉
+supabaseClient.auth.onAuthStateChange((event) => {
+  if (event === 'SIGNED_OUT') window.location.href = "login.html";
 });
 
 async function logout() {
   await supabaseClient.auth.signOut();
-  window.location.href = "login.html";
 }
 
 async function loadRequests() {
   const container = document.getElementById("review-list");
+  container.innerHTML = "<p style='text-align:center;'>正在加載筆記資料...</p>";
 
   const { data, error } = await supabaseClient
     .from("notes")
@@ -135,93 +91,49 @@ async function loadRequests() {
   }
 
   container.innerHTML = "";
-
   data.forEach(note => {
-    let badgeClass = "status-pending";
-    let badgeText = "⏳ 待審核";
-
-    if (note.status === "approved") {
-      badgeClass = "status-approved";
-      badgeText = "🟢 已核准";
-    }
-
-    if (note.status === "rejected") {
-      badgeClass = "status-rejected";
-      badgeText = "🔴 已拒絕";
-    }
+    let badgeClass = note.status === "approved" ? "status-approved" : (note.status === "rejected" ? "status-rejected" : "status-pending");
+    let badgeText = note.status === "approved" ? "🟢 已核准" : (note.status === "rejected" ? "🔴 已拒絕" : "⏳ 待審核");
 
     container.innerHTML += `
       <div class="review-item">
-
-        <div class="review-thumb-wrapper">
-          📝
-        </div>
-
+        <div class="review-thumb-wrapper">📝</div>
         <div class="review-info">
-
           <div class="book-main">
             <h4>${note.title || note.course_name}</h4>
             <p><strong>說明：</strong>${note.description || "無備註。"}</p>
           </div>
-
           <div class="book-meta">
             <p>🎓 <strong>${note.department || "通識 / 其他"}</strong></p>
             <p>📖 ${note.course_name || "未填"}</p>
             <p>👨‍🏫 ${note.professor || "未填"}</p>
           </div>
-
           <div class="book-meta">
             <p>👤 ${note.seller_name || "匿名"}</p>
-            <a href="${note.line_id || "#"}" target="_blank" style="color:#007AFF; font-size:12px; text-decoration:underline;">
-              🔗 檢視聯絡資料
-            </a>
-            <br>
-            <a href="${note.file_url || "#"}" target="_blank" style="color:#a89072; font-size:12px; text-decoration:underline;">
-              📄 查看筆記檔案
-            </a>
+            <a href="${note.line_id || "#"}" target="_blank" style="color:#007AFF; font-size:12px; text-decoration:underline;">🔗 檢視聯絡資料</a><br>
+            <a href="${note.file_url || "#"}" target="_blank" style="color:#a89072; font-size:12px; text-decoration:underline;">📄 查看筆記檔案</a>
           </div>
-
         </div>
-
         <div style="text-align:right; display:flex; flex-direction:column; gap:8px; align-items:flex-end;">
-
-          <span class="status-badge ${badgeClass}">
-            ${badgeText}
-          </span>
-
+          <span class="status-badge ${badgeClass}">${badgeText}</span>
           <div class="action-btns">
-            <button onclick="updateStatus('${note.id}', 'approved')" class="btn-sm btn-approve">
-              👍 核准
-            </button>
-
-            <button onclick="updateStatus('${note.id}', 'rejected')" class="btn-sm btn-reject">
-              ❌ 拒絕
-            </button>
+            <button onclick="updateStatus('${note.id}', 'approved')" class="btn-sm btn-approve">👍 核准</button>
+            <button onclick="updateStatus('${note.id}', 'rejected')" class="btn-sm btn-reject">❌ 拒絕</button>
           </div>
-
         </div>
-
       </div>
     `;
   });
 }
 
 async function updateStatus(id, status) {
-  const { error } = await supabaseClient
-    .from("notes")
-    .update({
-      status: status
-    })
-    .eq("id", id);
-
-  if (error) {
-    alert("更新失敗：" + error.message);
-    return;
-  }
-
+  const { error } = await supabaseClient.from("notes").update({ status: status }).eq("id", id);
+  if (error) { alert("更新失敗：" + error.message); return; }
   loadRequests();
 }
-</script>
 
+// 啟動身分驗證
+checkAuth();
+</script>
 </body>
 </html>

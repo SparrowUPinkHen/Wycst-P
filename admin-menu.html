@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>管理後台選單 | Wycst P</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding-top: 50px; background: #f8fafc; }
+    .btn { display: block; width: 220px; margin: 15px auto; padding: 15px; background: #43392f; color: white; text-decoration: none; border-radius: 10px; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>請選擇管理後台</h1>
+  <a href="admin-books.html" class="btn">二手書審核後台</a>
+  <a href="admin-notes.html" class="btn">筆記審核後台</a>
+  <a href="admin-exams.html" class="btn">考古題審核後台</a>
+  <br>
+  <button onclick="logout()" style="background:none; border:none; color:#dc3545; cursor:pointer;">登出系統</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase.js"></script>
+  <script>
+    async function logout() {
+      await supabaseClient.auth.signOut();
+      window.location.href = "login.html";
+    }
+  </script>
+</body>
+</html>

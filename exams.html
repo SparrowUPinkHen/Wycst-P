@@ -98,6 +98,13 @@
 
     .download-btn:hover { background: #8a7a66; }
 
+    /* 完全對齊二手書市集的聯絡按鈕樣式 */
+    .front-contact-btn { 
+      display: inline-block; color: white !important; padding: 12px 16px; border-radius: 12px; border: none; font-weight: bold; font-size: 13px; margin-top: 10px; width: 100%; box-sizing: border-box; text-align: center; transition: opacity 0.2s; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
+      appearance: none;
+    }
+    .front-contact-btn:hover { opacity: 0.9; }
+
     @media (max-width: 576px) {
       .search-card { padding: 12px; gap: 8px; }
       .search-input-group, .filter-select-group { flex: 1; min-width: 100%; }
@@ -105,6 +112,7 @@
       .book-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 0 5px; }
       .book-card h3 { font-size: 14px; }
       .download-btn { padding: 10px 8px; font-size: 12px; border-radius: 10px; }
+      .front-contact-btn { padding: 10px 8px; font-size: 12px; border-radius: 10px; }
     }
   </style>
 </head>
@@ -113,37 +121,25 @@
 
 <header class="hero">
 <nav class="navbar">
-
- <a href="index.html">首頁</a>
-
+  <a href="index.html">首頁</a>
   <a href="books.html">📚 二手書</a>
-
   <a href="notes.html">📝 筆記</a>
-
   <a href="exams.html">📄 考古題</a>
-
   <a href="sell-book.html">📖 刊登二手書</a>
-
   <a href="sell-note.html">✏️ 上傳筆記</a>
-
   <a href="sell-exam.html">📂 上傳考古題</a>
-
   <a href="about.html">關於我們</a>
-  
   <a href="terms.html">平台規章</a>
 </nav>
-
   <h1>考古題共享</h1>
   <p class="subtitle">Find past exams from students.</p>
 </header>
 
 <div class="search-container">
   <div class="search-card">
-
     <div class="search-input-group">
       <input type="text" id="searchBar" onkeydown="if(event.key==='Enter') executeSearch()" placeholder="🔍 輸入課程、教授、年份、考古題名稱搜尋...">
     </div>
-
     <div class="filter-select-group">
       <select id="deptFilter">
         <option value="ALL">🎓 全部科系領域</option>
@@ -156,10 +152,8 @@
         <option value="通識 / 其他">🏫 通識 / 其他</option>
       </select>
     </div>
-
     <button class="search-btn" onclick="executeSearch()">🔍 立即查詢</button>
     <button class="clear-btn" onclick="resetFilters()">重置</button>
-
   </div>
 </div>
 
@@ -180,21 +174,9 @@ let isDataLoaded = false;
 
 async function loadExams() {
   const container = document.getElementById("exam-list");
-
-  container.innerHTML =
-    "<p style='text-align:center; color:#8a7a66;'>⚡ 正在同步最新考古題清單...</p>";
-
-  const { data, error } = await supabaseClient
-    .from("exams")
-    .select("*")
-    .eq("status", "approved")
-    .order("created_at", { ascending: false });
-
-  if (error) {
-    container.innerHTML = "<p style='text-align:center;'>考古題讀取失敗。</p>";
-    return;
-  }
-
+  container.innerHTML = "<p style='text-align:center; color:#8a7a66;'>⚡ 正在同步最新考古題清單...</p>";
+  const { data, error } = await supabaseClient.from("exams").select("*").eq("status", "approved").order("created_at", { ascending: false });
+  if (error) { container.innerHTML = "<p style='text-align:center;'>考古題讀取失敗。</p>"; return; }
   allExams = data || [];
   isDataLoaded = true;
   renderExams(allExams);
@@ -202,54 +184,59 @@ async function loadExams() {
 
 function renderExams(examsList) {
   const container = document.getElementById("exam-list");
-
   if (examsList.length === 0) {
-    container.innerHTML =
-      "<p style='text-align:center; color:#8a7a66; grid-column: 1/-1; padding: 40px 0;'>🔍 沒有找到符合條件的考古題。</p>";
+    container.innerHTML = "<p style='text-align:center; color:#8a7a66; grid-column: 1/-1; padding: 40px 0;'>🔍 沒有找到符合條件的考古題。</p>";
     return;
   }
-
   container.innerHTML = "";
-
   examsList.forEach(exam => {
-    const fileUrl = exam.file_url || "";
-    const department = exam.department || "通識 / 其他";
+    
+    // 帶入完全對齊 book 的動態按鈕判斷邏輯
+    const contactUrl = exam.line_id || "";
+    let btnText = "💬 聯絡提供者";
+    let btnBgColor = "#43392f";
+    let isEmail = false;
+    let emailAddress = "";
+
+    if (contactUrl.includes("line.me")) { btnText = "💬 LINE 聯絡"; btnBgColor = "#06C755"; }
+    else if (contactUrl.includes("facebook.com")) { btnText = "👤 FB 聯絡"; btnBgColor = "#1877F2"; }
+    else if (contactUrl.includes("instagram.com")) { btnText = "📸 IG 聯絡"; btnBgColor = "#E1306C"; }
+    else if (contactUrl.includes("tel:")) { btnText = "📞 電話聯絡"; btnBgColor = "#007AFF"; }
+    else if (contactUrl.includes("mailto:")) {
+      isEmail = true;
+      emailAddress = contactUrl.replace("mailto:", "");
+      btnText = "✉️ 複製信箱";
+      btnBgColor = "#64748B";
+    }
+
+    const clickHandler = isEmail ? `copyEmail('${emailAddress}', this)` : `goToContact('${contactUrl}')`;
 
     container.innerHTML += `
       <div class="book-card">
-
         <div class="book-image-wrapper">
-          <span class="dept-badge">${department}</span>
+          <span class="dept-badge">${exam.department || "通識 / 其他"}</span>
           <div class="exam-file-icon">📄</div>
         </div>
-
         <div class="book-info">
           <h3>${exam.title || exam.course_name}</h3>
-
           <div class="book-description-area">
             <p><strong>課程：</strong>${exam.course_name || "未填寫"}</p>
             <p><strong>教授：</strong>${exam.professor || "未填寫"}</p>
             <p><strong>年份：</strong>${exam.year || "未填寫"}</p>
             <p class="book-meta-desc">${exam.description || "無備註說明。"}</p>
           </div>
-
           <div style="margin-top: auto; padding-top: 10px; border-top: 1px solid #f8f5f0;">
+            <p style="margin: 4px 0 0 0; font-size: 12px; color: #7a6c5a;">提供者：${exam.seller_name || "匿名"}</p>
+            
+            ${contactUrl 
+              ? `<button onclick="${clickHandler}" class="front-contact-btn" style="background-color: ${btnBgColor};">
+                  ${btnText}
+                 </button>` 
+              : `<p style="margin: 14px 0 5px 0; font-size: 12px; color: #ccc; text-align: center;">未提供聯絡方式</p>`}
 
-            <p style="margin: 4px 0 0 0; font-size: 12px; color: #7a6c5a;">
-              提供者：${exam.seller_name || "匿名"}
-            </p>
-
-            <p style="margin: 4px 0 0 0; font-size: 12px; color: #7a6c5a;">
-              LINE：${exam.line_id || "未提供"}
-            </p>
-
-            <a href="${fileUrl}" target="_blank" class="download-btn">
-              查看 / 下載考古題
-            </a>
-
+            <a href="${exam.file_url || "#"}" target="_blank" class="download-btn">查看 / 下載考古題</a>
           </div>
         </div>
-
       </div>
     `;
   });
@@ -257,34 +244,13 @@ function renderExams(examsList) {
 
 function executeSearch() {
   if (!isDataLoaded) return;
-
-  const keyword =
-    document.getElementById("searchBar").value.toLowerCase().trim();
-
-  const selectedDept =
-    document.getElementById("deptFilter").value;
-
+  const keyword = document.getElementById("searchBar").value.toLowerCase().trim();
+  const selectedDept = document.getElementById("deptFilter").value;
   const filtered = allExams.filter(exam => {
-    const matchesDept =
-      selectedDept === "ALL" || exam.department === selectedDept;
-
-    const titleStr = exam.title || "";
-    const courseStr = exam.course_name || "";
-    const profStr = exam.professor || "";
-    const descStr = exam.description || "";
-    const yearStr = exam.year || "";
-
-    const matchesKeyword =
-      !keyword ||
-      titleStr.toLowerCase().includes(keyword) ||
-      courseStr.toLowerCase().includes(keyword) ||
-      profStr.toLowerCase().includes(keyword) ||
-      descStr.toLowerCase().includes(keyword) ||
-      yearStr.toLowerCase().includes(keyword);
-
+    const matchesDept = selectedDept === "ALL" || exam.department === selectedDept;
+    const matchesKeyword = !keyword || [exam.title, exam.course_name, exam.professor, exam.description, exam.year].some(val => (val || "").toLowerCase().includes(keyword));
     return matchesDept && matchesKeyword;
   });
-
   renderExams(filtered);
 }
 
@@ -292,6 +258,23 @@ function resetFilters() {
   document.getElementById("searchBar").value = "";
   document.getElementById("deptFilter").value = "ALL";
   renderExams(allExams);
+}
+
+// 必須補上對齊 book 的點擊與複製核心函式
+function goToContact(url) {
+  if (!url) { alert("抱歉，該用戶沒有提供有效的聯絡方式。"); return; }
+  const link = document.createElement('a');
+  link.href = url; link.target = '_blank'; link.click();
+}
+
+function copyEmail(email, btn) {
+  navigator.clipboard.writeText(email).then(() => {
+    const originalText = btn.innerText;
+    btn.innerText = "✅ 複製成功！";
+    setTimeout(() => { btn.innerText = originalText; }, 2000);
+  }).catch(() => {
+    alert(`提供者信箱為：${email}`);
+  });
 }
 
 loadExams();

@@ -84,6 +84,7 @@
       display: block;
     }
 
+    /* 完全對齊二手書市集的聯絡按鈕樣式 */
     .front-contact-btn {
       display: inline-block; color: white !important; padding: 12px 16px; border-radius: 12px; border: none; font-weight: bold; font-size: 13px; margin-top: 10px; width: 100%; box-sizing: border-box; text-align: center; transition: opacity 0.2s; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
       appearance: none;
@@ -104,7 +105,6 @@
       text-align: center;
       margin-top: 10px;
     }
-
     .download-btn:hover {
       background: #8a7a66;
     }
@@ -123,25 +123,16 @@
 
 <header class="hero">
   <nav class="navbar">
-
- <a href="index.html">首頁</a>
-
-  <a href="books.html">📚 二手書</a>
-
-  <a href="notes.html">📝 筆記</a>
-
-  <a href="exams.html">📄 考古題</a>
-
-  <a href="sell-book.html">📖 刊登二手書</a>
-
-  <a href="sell-note.html">✏️ 上傳筆記</a>
-
-  <a href="sell-exam.html">📂 上傳考古題</a>
-
-  <a href="about.html">關於我們</a>
-  
-  <a href="terms.html">平台規章</a>
-</nav>
+    <a href="index.html">首頁</a>
+    <a href="books.html">📚 二手書</a>
+    <a href="notes.html">📝 筆記</a>
+    <a href="exams.html">📄 考古題</a>
+    <a href="sell-book.html">📖 刊登二手書</a>
+    <a href="sell-note.html">✏️ 上傳筆記</a>
+    <a href="sell-exam.html">📂 上傳考古題</a>
+    <a href="about.html">關於我們</a>
+    <a href="terms.html">平台規章</a>
+  </nav>
   <h1>筆記共享</h1>
   <p class="subtitle">Find notes from students.</p>
 </header>
@@ -215,6 +206,26 @@ function renderNotes(notesList) {
   notesList.forEach(note => {
     const fileUrl = note.file_url || "";
     const department = note.department || "通識 / 其他";
+    const contactUrl = note.line_id || "";
+
+    // 完全對齊 book 的動態按鈕判斷邏輯
+    let btnText = "💬 聯絡提供者";
+    let btnBgColor = "#43392f";
+    let isEmail = false;
+    let emailAddress = "";
+
+    if (contactUrl.includes("line.me")) { btnText = "💬 LINE 聯絡"; btnBgColor = "#06C755"; }
+    else if (contactUrl.includes("facebook.com")) { btnText = "👤 FB 聯絡"; btnBgColor = "#1877F2"; }
+    else if (contactUrl.includes("instagram.com")) { btnText = "📸 IG 聯絡"; btnBgColor = "#E1306C"; }
+    else if (contactUrl.includes("tel:")) { btnText = "📞 電話聯絡"; btnBgColor = "#007AFF"; }
+    else if (contactUrl.includes("mailto:")) {
+      isEmail = true;
+      emailAddress = contactUrl.replace("mailto:", "");
+      btnText = "✉️ 複製信箱";
+      btnBgColor = "#64748B";
+    }
+
+    const clickHandler = isEmail ? `copyEmail('${emailAddress}', this)` : `goToContact('${contactUrl}')`;
 
     container.innerHTML += `
       <div class="book-card">
@@ -237,9 +248,11 @@ function renderNotes(notesList) {
               提供者：${note.seller_name || "匿名"}
             </p>
 
-            <p style="margin: 4px 0 0 0; font-size: 12px; color: #7a6c5a;">
-              LINE：${note.line_id || "未提供"}
-            </p>
+            ${contactUrl 
+              ? `<button onclick="${clickHandler}" class="front-contact-btn" style="background-color: ${btnBgColor};">
+                  ${btnText}
+                 </button>` 
+              : `<p style="margin: 14px 0 5px 0; font-size: 12px; color: #ccc; text-align: center;">未提供聯絡方式</p>`}
 
             <a href="${fileUrl}" target="_blank" class="download-btn">
               查看 / 下載筆記
@@ -281,6 +294,23 @@ function resetFilters() {
   document.getElementById("searchBar").value = "";
   document.getElementById("deptFilter").value = "ALL";
   renderNotes(allNotes);
+}
+
+// 補上跳轉與複製核心函式
+function goToContact(url) {
+  if (!url) { alert("抱歉，該用戶沒有提供有效的聯絡方式。"); return; }
+  const link = document.createElement('a');
+  link.href = url; link.target = '_blank'; link.click();
+}
+
+function copyEmail(email, btn) {
+  navigator.clipboard.writeText(email).then(() => {
+    const originalText = btn.innerText;
+    btn.innerText = "✅ 複製成功！";
+    setTimeout(() => { btn.innerText = originalText; }, 2000);
+  }).catch(() => {
+    alert(`提供者信箱為：${email}`);
+  });
 }
 
 loadNotes();
